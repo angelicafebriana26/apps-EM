@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Database, Search, Download, Edit2, Save, X, Trash2, Loader2 } from "lucide-react";
+import { Database, Search, Download, Edit2, Save, X, Trash2, Loader2, Filter, RotateCcw, AlertTriangle } from "lucide-react";
 import { getEMMeasurements, EMMeasurementRecord, deleteMeasurement, updateMeasurement, deleteDocumentAndMeasurements } from "../services/emDatabaseService";
 import { RoomGroup, ExtractedRecord } from "../types";
 import { exportToExcel } from "../lib/exportUtils";
@@ -33,11 +33,39 @@ function evaluateRoomState(room: RoomGroup): RoomGroup {
   };
 }
 
+function parseDateParts(dateStr?: string | null) {
+  if (!dateStr) return { year: '', month: '', day: '', raw: '' };
+  const clean = dateStr.trim();
+  const match = clean.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);
+  if (match) {
+    return {
+      year: match[1],
+      month: match[2].padStart(2, '0'),
+      day: match[3].padStart(2, '0'),
+      raw: clean
+    };
+  }
+  const yearMatch = clean.match(/\b(20\d{2})\b/);
+  return {
+    year: yearMatch ? yearMatch[1] : '',
+    month: '',
+    day: '',
+    raw: clean
+  };
+}
+
 export function EmData() {
   const [measurements, setMeasurements] = useState<EMMeasurementRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dbError, setDbError] = useState<string | null>(null);
+  
+  // Filter States
   const [search, setSearch] = useState("");
+  const [filterYear, setFilterYear] = useState("");
+  const [filterMonth, setFilterMonth] = useState("");
+  const [filterDate, setFilterDate] = useState("");
   const [filterRoom, setFilterRoom] = useState("");
+  const [filterGrade, setFilterGrade] = useState("");
   const [filterConclusion, setFilterConclusion] = useState("");
   
   const [editingRoomId, setEditingRoomId] = useState<string | null>(null);
@@ -49,21 +77,23 @@ export function EmData() {
 
   const loadData = async () => {
     setLoading(true);
+    setDbError(null);
     try {
       const data = await getEMMeasurements();
-      setMeasurements(data);
-    } catch (err) {
-      console.error(err);
+      setMeasurements(data || []);
+    } catch (err: any) {
+      console.error("Failed to load EM data:", err);
+      setDbError(err?.message || "Failed to load records from Firestore.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Group measurements by room_name + measurement_date
+  // Group measurements by room_name + measurement_date + document_id
   const groupedRooms = useMemo(() => {
     const groups: Record<string, RoomGroup> = {};
     measurements.forEach(m => {
-      const key = `${m.measurement_date || 'unknown'}_${m.room_name}`;
+      const key = `${m.document_id || 'doc'}_${m.measurement_date || 'nodate'}_${m.room_name || 'noroom'}`;
       if (!groups[key]) {
         groups[key] = {
           id: key,
@@ -72,8 +102,9 @@ export function EmData() {
           room_grade: m.room_grade || "",
           manual_grade: m.room_grade || "",
           parameters: {},
+          source_page: m.source_page || null,
           conclusion: m.room_conclusion || "PASS",
-          document_id: m.document_id // Used to delete the whole document if needed
+          document_id: m.document_id
         };
       }
       groups[key].parameters[m.parameter_name] = {
@@ -95,20 +126,102 @@ export function EmData() {
     return Object.values(groups);
   }, [measurements]);
 
-  // Apply filters
+  // Extract distinct filter options
+  const uniqueYears = useMemo(() => {
+    const years = new Set<string>();
+    groupedRooms.forEach(r => {
+      const { year } = parseDateParts(r.measurement_date);
+      if (year) years.add(year);
+    });
+    return Array.from(years).sort().reverse();
+  }, [groupedRooms]);
+
+  const uniqueMonths = useMemo(() => {
+    const months = new Set<string>();
+    groupedRooms.forEach(r => {
+      const { month } = parseDateParts(r.measurement_date);
+      if (month) months.add(month);
+    });
+    return Array.from(months).sort();
+  }, [groupedRooms]);
+
+  const uniqueDates = useMemo(() => {
+    const dates = new Set<string>();
+    groupedRooms.forEach(r => {
+      if (r.measurement_date) dates.add(r.measurement_date);
+    });
+    return Array.from(dates).sort().reverse();
+  }, [groupedRooms]);
+
+  const uniqueRooms = useMemo(() => {
+    const rooms = new Set<string>();
+    groupedRooms.forEach(r => {
+      if (r.room_name) rooms.add(r.room_name);
+    });
+    return Array.from(rooms).sort();
+  }, [groupedRooms]);
+
+  const uniqueGrades = useMemo(() => {
+    const grades = new Set<string>();
+    groupedRooms.forEach(r => {
+      const grade = r.manual_grade || r.room_grade;
+      if (grade) grades.add(grade);
+    });
+    return Array.from(grades).sort();
+  }, [groupedRooms]);
+
+  // Multi-criteria Filtering
   const filteredRooms = useMemo(() => {
-    return groupedRooms.filter(room => {
-      if (search && !room.room_name?.toLowerCase().includes(search.toLowerCase())) return false;
-      if (filterRoom && room.room_name !== filterRoom) return false;
-      if (filterConclusion && room.conclusion !== filterConclusion) return false;
+    return groupedRooms.filter(r => {
+      const { year, month } = parseDateParts(r.measurement_date);
+      const grade = (r.manual_grade || r.room_grade || "").toUpperCase();
+
+      // Search keyword filter
+      if (search) {
+        const query = search.toLowerCase();
+        const matchesRoom = r.room_name?.toLowerCase().includes(query);
+        const matchesDate = r.measurement_date?.toLowerCase().includes(query);
+        const matchesGrade = grade.toLowerCase().includes(query);
+        const matchesConclusion = r.conclusion?.toLowerCase().includes(query);
+        if (!matchesRoom && !matchesDate && !matchesGrade && !matchesConclusion) {
+          return false;
+        }
+      }
+
+      // Year filter
+      if (filterYear && year !== filterYear) return false;
+
+      // Month filter
+      if (filterMonth && month !== filterMonth) return false;
+
+      // Exact Date filter
+      if (filterDate && r.measurement_date !== filterDate) return false;
+
+      // Room filter
+      if (filterRoom && r.room_name !== filterRoom) return false;
+
+      // Grade filter
+      if (filterGrade && grade !== filterGrade.toUpperCase()) return false;
+
+      // Conclusion filter
+      if (filterConclusion && r.conclusion !== filterConclusion) return false;
+
       return true;
     });
-  }, [groupedRooms, search, filterRoom, filterConclusion]);
+  }, [groupedRooms, search, filterYear, filterMonth, filterDate, filterRoom, filterGrade, filterConclusion]);
 
-  const uniqueRooms = useMemo(() => Array.from(new Set(groupedRooms.map(r => r.room_name))).filter(Boolean), [groupedRooms]);
+  const hasActiveFilters = Boolean(
+    search || filterYear || filterMonth || filterDate || filterRoom || filterGrade || filterConclusion
+  );
 
-  const handleExport = () => {
-    exportToExcel(filteredRooms, "EM_Data_Export.xlsx");
+  const resetFilters = () => {
+    setSearch("");
+    setFilterYear("");
+    setFilterMonth("");
+    setFilterDate("");
+    setFilterRoom("");
+    setFilterGrade("");
+    setFilterConclusion("");
   };
 
   const startEdit = (room: RoomGroup) => {
@@ -116,196 +229,265 @@ export function EmData() {
     setEditForm(JSON.parse(JSON.stringify(room)));
   };
 
-  const handleParamEdit = (paramName: string, field: keyof ExtractedRecord, value: any) => {
-    setEditForm(prev => {
-      const current = prev.parameters ? prev.parameters[paramName] : null;
-      if (!current) {
-        return {
-          ...prev,
-          parameters: {
-            ...(prev.parameters || {}),
-            [paramName]: {
-              id: Math.random().toString(), // temp ID
-              measurement_date: prev.measurement_date || null,
-              room_name: prev.room_name || null,
-              room_grade: prev.manual_grade || prev.room_grade || null,
-              parameter: paramName,
-              result: null,
-              unit: null,
-              alert_limit: null,
-              action_limit: null,
-              status: null,
-              manual_status: null,
-              source_page: null,
-              [field]: value
-            }
-          }
-        };
-      }
-      return {
-        ...prev,
-        parameters: {
-          ...prev.parameters,
-          [paramName]: { ...current, [field]: value }
-        }
-      };
-    });
+  const handleParamEdit = (paramName: string, field: string, value: any) => {
+    if (!editForm.parameters) return;
+    const newParams = { ...editForm.parameters };
+    if (!newParams[paramName]) {
+      newParams[paramName] = {
+        parameter: paramName,
+        result: null,
+        status: null,
+        extraction_method: 'MANUAL_EDIT'
+      } as any;
+    }
+    newParams[paramName] = {
+      ...newParams[paramName],
+      [field]: value
+    };
+    setEditForm({ ...editForm, parameters: newParams });
   };
 
   const saveEdit = async () => {
-    if (!editingRoomId || !editForm) return;
-    
-    // Recalculate
-    const updatedRoom = evaluateRoomState(editForm as RoomGroup);
+    if (!editForm || !editingRoomId) return;
 
     try {
-      // Find all measurements that belong to this room
-      const promises: Promise<void>[] = [];
+      const evaluated = evaluateRoomState(editForm as RoomGroup);
 
-      Object.values(updatedRoom.parameters).forEach(param => {
-        if (!param) return;
-        
-        let parameterCode = param.parameter;
-        if (param.parameter === '부유입자 ≥0.5 μm') parameterCode = 'PARTICLE_0_5';
-        if (param.parameter === '부유입자 ≥5.0 μm') parameterCode = 'PARTICLE_5_0';
-        if (param.parameter === '부유균') parameterCode = 'AIRBORNE_VIABLE';
-        if (param.parameter === '낙하균') parameterCode = 'SETTLE_PLATE';
-        if (param.parameter === '표면균') parameterCode = 'SURFACE_CONTACT';
-
-        // Check if measurement ID exists in our loaded state
-        const exists = measurements.some(m => m.measurement_id === param.id);
-
-        if (exists) {
-          promises.push(updateMeasurement(param.id, {
-            room_grade: updatedRoom.manual_grade || updatedRoom.room_grade || null,
-            room_name: updatedRoom.room_name || null,
-            measurement_date: updatedRoom.measurement_date || null,
-            result: param.result !== undefined ? param.result : null,
-            final_status: param.manual_status || param.status || null,
+      for (const paramName of Object.keys(evaluated.parameters)) {
+        const param = evaluated.parameters[paramName];
+        if (param.id) {
+          await updateMeasurement(param.id, {
+            room_name: evaluated.room_name || null,
+            room_grade: evaluated.manual_grade || evaluated.room_grade || null,
+            measurement_date: evaluated.measurement_date || null,
+            result: param.result,
             calculated_status: param.status || null,
-            room_conclusion: updatedRoom.conclusion || null,
-          }));
-        } else {
-          // In a real app we might insert a new record if the param didn't exist before
-          // but for now we focus on updating existing records.
+            final_status: param.manual_status || param.status || null,
+            room_conclusion: evaluated.conclusion || null
+          });
         }
-      });
+      }
 
-      await Promise.all(promises);
-      
-      // Reload from DB
-      await loadData();
       setEditingRoomId(null);
-    } catch (err) {
-      console.error('Failed to save edit', err);
-      alert('Failed to save edit to the database.');
+      await loadData();
+    } catch (e) {
+      console.error("Failed to update measurement:", e);
+      alert("Failed to save changes to Firestore.");
     }
   };
 
   const deleteRoom = async (room: RoomGroup) => {
-    if (window.confirm(`Are you sure you want to delete all measurements for room ${room.room_name}?`)) {
-      try {
-        const promises = Object.values(room.parameters)
-          .filter(p => !!p && !!p.id)
-          .map(p => deleteMeasurement(p!.id));
-        await Promise.all(promises);
-        await loadData();
-      } catch (err) {
-        console.error('Failed to delete room', err);
-        alert('Failed to delete.');
-      }
+    if (!window.confirm(`Are you sure you want to delete measurements for ${room.room_name || 'this room'} on ${room.measurement_date || 'this date'}?`)) {
+      return;
     }
-  };
-  
-  const deleteDocument = async (documentId: string) => {
-    if (window.confirm(`Are you sure you want to completely delete the entire document and all its measurements?`)) {
-      try {
-        await deleteDocumentAndMeasurements(documentId);
-        await loadData();
-      } catch (err) {
-        console.error('Failed to delete document', err);
-        alert('Failed to delete document.');
+
+    try {
+      for (const paramName of Object.keys(room.parameters)) {
+        const param = room.parameters[paramName];
+        if (param.id) {
+          await deleteMeasurement(param.id);
+        }
       }
+      await loadData();
+    } catch (e) {
+      console.error("Failed to delete room:", e);
+      alert("Failed to delete records.");
     }
   };
 
-  const paramsList = ['부유입자 ≥0.5 μm', '부유입자 ≥5.0 μm', '부유균', '낙하균', '표면균'];
+  const deleteDocument = async (docId: string) => {
+    if (!window.confirm("Are you sure you want to delete all measurements from this source PDF document?")) {
+      return;
+    }
 
-  const getStatusColor = (status: string | null | undefined) => {
+    try {
+      await deleteDocumentAndMeasurements(docId);
+      await loadData();
+    } catch (e) {
+      console.error("Failed to delete document:", e);
+      alert("Failed to delete source document records.");
+    }
+  };
+
+  const handleExportFiltered = () => {
+    const filename = `EM_Database_Export_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    exportToExcel(filteredRooms, filename);
+  };
+
+  const paramsList = [
+    "부유입자 ≥0.5 μm",
+    "부유입자 ≥5.0 μm",
+    "부유균",
+    "낙하균",
+    "표면균"
+  ];
+
+  const getStatusColor = (status?: string | null) => {
     switch (status) {
-      case 'PASS': return 'text-gray-900';
-      case 'ALERT': return 'text-blue-600 font-bold';
-      case 'ACTION': return 'text-green-600 font-bold';
-      case 'OOS': return 'text-red-600 font-bold';
+      case 'PASS': return 'text-green-600 font-semibold';
+      case 'ALERT': return 'text-yellow-600 font-bold';
+      case 'ACTION': return 'text-orange-600 font-bold';
+      case 'OOS': return 'text-red-600 font-extrabold';
       default: return 'text-gray-400';
     }
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-8rem)]">
-      {/* Header & Controls */}
-      <div className="px-6 py-5 border-b border-gray-200 bg-gray-50/50">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h3 className="font-bold text-gray-700 flex items-center gap-2">
-            <span className="w-2 h-4 bg-orange-500 rounded-full"></span>
-            Environmental Monitoring Records
-          </h3>
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search rooms..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="block w-full rounded border border-gray-200 pl-10 focus:border-orange-500 focus:ring-orange-500 sm:text-sm py-2 bg-white"
-              />
-            </div>
-            <button 
-              onClick={handleExport}
-              className="inline-flex items-center px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 font-bold text-[10px] uppercase tracking-widest rounded border border-green-200 transition-colors"
-            >
-              <Download className="mr-2 h-3 w-3" />
-              Export
-            </button>
-          </div>
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col min-w-0">
+      {/* Top Action Bar */}
+      <div className="p-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+            <Database className="w-5 h-5 text-orange-500" />
+            Environmental Monitoring Database
+          </h2>
+          <p className="text-xs text-gray-400">
+            Persistent storage of all imported and validated Environmental Monitoring measurements.
+          </p>
         </div>
 
-        {/* Filters */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <select 
-            value={filterRoom} 
-            onChange={e => setFilterRoom(e.target.value)}
-            className="block w-full rounded border border-gray-200 py-2 pl-3 pr-10 text-xs text-gray-600 focus:border-orange-500 focus:outline-none focus:ring-orange-500 bg-white"
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1 md:w-64">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search rooms, dates, grade..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded text-xs focus:border-orange-500 focus:outline-none bg-white"
+            />
+          </div>
+
+          <button
+            onClick={handleExportFiltered}
+            disabled={filteredRooms.length === 0}
+            className="flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded shadow transition-colors"
           >
-            <option value="">All Rooms</option>
-            {uniqueRooms.map(r => <option key={r} value={r}>{r}</option>)}
-          </select>
-          <select 
-            value={filterConclusion}
-            onChange={e => setFilterConclusion(e.target.value)}
-            className="block w-full rounded border border-gray-200 py-2 pl-3 pr-10 text-xs text-gray-600 focus:border-orange-500 focus:outline-none focus:ring-orange-500 bg-white"
-          >
-            <option value="">All Statuses</option>
-            <option value="PASS">Pass</option>
-            <option value="ALERT">Alert</option>
-            <option value="ACTION">Action</option>
-            <option value="OOS">OOS</option>
-            <option value="REVIEW REQUIRED">Review Required</option>
-          </select>
-          <button onClick={loadData} className="inline-flex items-center justify-center px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 font-bold text-[10px] uppercase tracking-widest rounded border border-gray-200 transition-colors">
-            Refresh Data
+            <Download className="w-3.5 h-3.5" />
+            Export Excel ({filteredRooms.length})
           </button>
         </div>
       </div>
 
+      {dbError && (
+        <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded text-xs text-red-700 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+            <span>{dbError}</span>
+          </div>
+          <button onClick={loadData} className="font-bold underline uppercase text-[10px]">
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Multi-Criteria Filter Bar */}
+      <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 items-center">
+          {/* Year Filter */}
+          <div>
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Year</label>
+            <select 
+              value={filterYear} 
+              onChange={e => setFilterYear(e.target.value)}
+              className="block w-full rounded border border-gray-200 py-1.5 pl-2.5 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Years</option>
+              {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+
+          {/* Month Filter */}
+          <div>
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Month</label>
+            <select 
+              value={filterMonth} 
+              onChange={e => setFilterMonth(e.target.value)}
+              className="block w-full rounded border border-gray-200 py-1.5 pl-2.5 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Months</option>
+              {uniqueMonths.map(m => <option key={m} value={m}>{m} ({Number(m)}월)</option>)}
+            </select>
+          </div>
+
+          {/* Date Filter */}
+          <div>
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Date</label>
+            <select 
+              value={filterDate} 
+              onChange={e => setFilterDate(e.target.value)}
+              className="block w-full rounded border border-gray-200 py-1.5 pl-2.5 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Dates</option>
+              {uniqueDates.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </div>
+
+          {/* Room Filter */}
+          <div>
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Room</label>
+            <select 
+              value={filterRoom} 
+              onChange={e => setFilterRoom(e.target.value)}
+              className="block w-full rounded border border-gray-200 py-1.5 pl-2.5 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Rooms</option>
+              {uniqueRooms.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </div>
+
+          {/* Grade Filter */}
+          <div>
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Grade</label>
+            <select 
+              value={filterGrade} 
+              onChange={e => setFilterGrade(e.target.value)}
+              className="block w-full rounded border border-gray-200 py-1.5 pl-2.5 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Grades</option>
+              {uniqueGrades.map(g => <option key={g} value={g}>Grade {g}</option>)}
+            </select>
+          </div>
+
+          {/* Status Filter */}
+          <div>
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Conclusion</label>
+            <select 
+              value={filterConclusion}
+              onChange={e => setFilterConclusion(e.target.value)}
+              className="block w-full rounded border border-gray-200 py-1.5 pl-2.5 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Statuses</option>
+              <option value="PASS">PASS</option>
+              <option value="ALERT">ALERT</option>
+              <option value="ACTION">ACTION</option>
+              <option value="OOS">OOS</option>
+              <option value="REVIEW REQUIRED">REVIEW REQUIRED</option>
+            </select>
+          </div>
+        </div>
+
+        {hasActiveFilters && (
+          <div className="mt-2.5 flex items-center justify-between text-xs text-gray-500 bg-orange-50/70 px-3 py-1.5 rounded border border-orange-200/60">
+            <span className="flex items-center gap-1.5 text-orange-800 font-medium">
+              <Filter className="w-3.5 h-3.5 text-orange-600" />
+              Active filters applied ({filteredRooms.length} of {groupedRooms.length} rooms matched)
+            </span>
+            <button
+              onClick={resetFilters}
+              className="text-[10px] font-bold text-orange-700 hover:text-orange-900 uppercase tracking-wider underline cursor-pointer"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Data Table */}
-      <div className="flex-1 overflow-auto p-6">
-        <div className="border border-gray-100 rounded-lg overflow-hidden h-full">
-          <table className="w-full text-xs text-left relative">
-            <thead className="bg-gray-50 border-b border-gray-100 sticky top-0 z-10">
+      <div className="p-6">
+        <div className="border border-gray-200 rounded-lg overflow-x-auto">
+          <table className="w-full text-xs text-left min-w-[900px]">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider w-16">Grade</th>
                 <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider w-32">Room</th>
@@ -321,7 +503,7 @@ export function EmData() {
               {loading ? (
                 <tr>
                   <td colSpan={10} className="px-6 py-16 text-center">
-                    <Loader2 className="mx-auto h-8 w-8 text-blue-500 mb-3 animate-spin" />
+                    <Loader2 className="mx-auto h-8 w-8 text-orange-500 mb-3 animate-spin" />
                     <p className="text-sm font-semibold text-gray-400 italic">Loading database records...</p>
                   </td>
                 </tr>
@@ -329,7 +511,17 @@ export function EmData() {
                 <tr>
                   <td colSpan={10} className="px-6 py-16 text-center">
                     <Database className="mx-auto h-10 w-10 text-gray-200 mb-3" />
-                    <p className="text-sm font-semibold text-gray-400 italic">No Environmental Monitoring data found.</p>
+                    <p className="text-sm font-semibold text-gray-400 italic">
+                      {hasActiveFilters ? "No records match the selected filters." : "No Environmental Monitoring data found in Firestore."}
+                    </p>
+                    {hasActiveFilters && (
+                      <button
+                        onClick={resetFilters}
+                        className="mt-3 inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-[10px] uppercase tracking-wider rounded"
+                      >
+                        Reset Filters
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (

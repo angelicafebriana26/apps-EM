@@ -331,7 +331,7 @@ export default function ExtractionReview({ result, onConfirm, onCancel }: Props)
                         {/* Method */}
                         <td className="px-3 py-3 align-top">
                           <span className="text-[10px] font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
-                            {Object.values(room.parameters)[0]?.extraction_method || 'GEMINI'}
+                            {(Object.values(room.parameters)[0] as ExtractedRecord | undefined)?.extraction_method || 'GEMINI'}
                           </span>
                         </td>
 

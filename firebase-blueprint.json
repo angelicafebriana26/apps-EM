@@ -27,6 +27,10 @@
       "room_conclusion": "string",
       "source_page": "number | null",
       "extraction_method": "string | null",
+      "sample_submission_date": "string | null",
+      "microorganism_id_status": "string | null",
+      "microorganism_name": "string | null",
+      "microorganism_names": "string[] | null",
       "created_at": "timestamp",
       "updated_at": "timestamp"
     }
