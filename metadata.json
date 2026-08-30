@@ -1,0 +1,8 @@
+{
+  "name": "Daewoong Bio QC Environmental Monitoring Data System",
+  "description": "Environmental Monitoring data management application to import CoA PDFs, store structured EM results, analyze monthly trends, and manage OOS results.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

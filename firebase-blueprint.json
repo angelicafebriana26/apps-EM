@@ -1,0 +1,34 @@
+{
+  "collections": {
+    "em_documents": {
+      "document_id": "string",
+      "filename": "string",
+      "page_count": "number",
+      "room_count": "number",
+      "measurement_count": "number",
+      "imported_at": "timestamp",
+      "processing_status": "string"
+    },
+    "em_measurements": {
+      "measurement_id": "string",
+      "document_id": "string",
+      "measurement_date": "string",
+      "room_grade": "string",
+      "room_name": "string",
+      "parameter_code": "string",
+      "parameter_name": "string",
+      "result": "number | null",
+      "unit": "string | null",
+      "alert_limit": "number | null",
+      "action_limit": "number | null",
+      "acceptance_criteria": "number | null",
+      "calculated_status": "string",
+      "final_status": "string",
+      "room_conclusion": "string",
+      "source_page": "number | null",
+      "extraction_method": "string | null",
+      "created_at": "timestamp",
+      "updated_at": "timestamp"
+    }
+  }
+}
