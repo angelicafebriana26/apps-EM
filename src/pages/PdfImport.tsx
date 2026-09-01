@@ -638,7 +638,7 @@ export function PdfImport() {
 
       {/* Upload Area */}
       <div 
-        className={`bg-white rounded-xl border border-dashed px-6 py-16 text-center transition-colors shadow-sm cursor-pointer ${
+        className={`qc-card border-dashed px-6 py-16 text-center transition-colors cursor-pointer ${
           isDragOver ? 'border-orange-500 bg-orange-50/50' : 'border-gray-300 hover:bg-gray-50'
         }`}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
@@ -656,34 +656,34 @@ export function PdfImport() {
         {uploading ? (
           <Loader2 className="mx-auto h-12 w-12 text-orange-500 mb-4 animate-spin" />
         ) : (
-          <UploadCloud className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+          <UploadCloud className="mx-auto h-12 w-12 text-gray-400 mb-4" />
         )}
-        <h3 className="text-lg font-medium text-gray-700 mb-2">
+        <h3 className="text-base font-bold text-gray-800 mb-2">
           {uploading ? 'Processing PDF Document...' : 'Drag Environmental Monitoring CoA PDF files here'}
         </h3>
-        <p className="text-sm text-gray-400 mb-6 italic">
+        <p className="text-xs text-gray-500 mb-6">
           {uploading ? 'Extracting via local parser & Gemini AI in batches...' : 'Supports text and scanned PDFs.'}
         </p>
         <button 
           type="button" 
           disabled={uploading}
-          className="inline-flex items-center px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 font-bold text-[10px] uppercase tracking-widest rounded border border-gray-200 transition-colors disabled:opacity-50"
+          className="btn-secondary disabled:opacity-50"
         >
           {uploading ? 'Extracting...' : 'Select PDF Files'}
         </button>
       </div>
 
       {/* File Processing Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
-        <div className="px-6 py-5 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
-          <h3 className="font-bold text-gray-700 flex items-center gap-2">
+      <div className="qc-card overflow-hidden flex flex-col">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
+          <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2">
             <span className="w-2 h-4 bg-orange-500 rounded-full"></span>
             Processing Queue
           </h3>
           {result?.status === 'incomplete' && (
              <button 
                 onClick={() => setReviewMode(true)}
-                className="inline-flex items-center px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded font-bold text-[10px] uppercase tracking-widest hover:bg-red-100 transition-colors"
+                className="btn-secondary text-red-600 border-red-200 hover:bg-red-50"
              >
                Review Required
              </button>
@@ -691,40 +691,40 @@ export function PdfImport() {
           {result?.status === 'extracted' && (
              <button 
                 onClick={() => setReviewMode(true)}
-                className="inline-flex items-center px-4 py-2 bg-orange-50 text-orange-600 border border-orange-200 rounded font-bold text-[10px] uppercase tracking-widest hover:bg-orange-100 transition-colors"
+                className="btn-primary"
              >
                Open Review
              </button>
           )}
         </div>
         <div className="p-6">
-          <div className="border border-gray-100 rounded-lg overflow-hidden h-full">
-            <table className="w-full text-xs text-left relative">
-              <thead className="bg-gray-50 border-b border-gray-100">
+          <div className="border border-gray-200 rounded-xl overflow-hidden h-full bg-white">
+            <table className="qc-table">
+              <thead>
                 <tr>
-                  <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider">File Name</th>
-                  <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider">Batches</th>
-                  <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider">Progress</th>
-                  <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider">Rooms Detected</th>
-                  <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider">Records Extracted</th>
-                  <th scope="col" className="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wider text-right">Status</th>
+                  <th scope="col" className="qc-th">File Name</th>
+                  <th scope="col" className="qc-th">Batches</th>
+                  <th scope="col" className="qc-th">Progress</th>
+                  <th scope="col" className="qc-th">Rooms Detected</th>
+                  <th scope="col" className="qc-th">Records Extracted</th>
+                  <th scope="col" className="qc-th text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="bg-white">
+              <tbody>
                 {!result ? (
                   <tr>
                     <td colSpan={6} className="px-3 py-10 text-center">
-                      <FileText className="mx-auto h-8 w-8 text-gray-200 mb-3" />
-                      <p className="text-sm font-semibold text-gray-400 italic">No files in queue</p>
+                      <FileText className="mx-auto h-8 w-8 text-gray-300 mb-3" />
+                      <p className="text-xs font-semibold text-gray-400">No files in queue</p>
                     </td>
                   </tr>
                 ) : (
                   <tr>
-                    <td className="px-3 py-3 font-medium text-gray-900">{result.filename}</td>
-                    <td className="px-3 py-3">
+                    <td className="qc-td font-semibold text-gray-900">{result.filename}</td>
+                    <td className="qc-td font-mono">
                       {result.batches.length} ({result.totalPages} pages)
                     </td>
-                    <td className="px-3 py-3">
+                    <td className="qc-td">
                       <div className="flex items-center gap-2">
                         <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
                           <div 
@@ -732,15 +732,15 @@ export function PdfImport() {
                             style={{ width: `${(result.processedPages / result.totalPages) * 100}%` }}
                           />
                         </div>
-                        <span className="text-gray-500">{Math.round((result.processedPages / result.totalPages) * 100)}%</span>
+                        <span className="text-gray-500 font-mono text-[11px]">{Math.round((result.processedPages / result.totalPages) * 100)}%</span>
                       </div>
                     </td>
-                    <td className="px-3 py-3">{result.roomsDetected || '-'}</td>
-                    <td className="px-3 py-3">{result.recordsExtracted}</td>
-                    <td className="px-3 py-3 text-right">
-                      {result.status === 'processing' && <span className="inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-600 font-bold text-[10px] tracking-wider uppercase"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Processing</span>}
-                      {result.status === 'extracted' && <span className="inline-flex items-center px-2 py-1 rounded bg-green-50 text-green-600 font-bold text-[10px] tracking-wider uppercase"><CheckCircle className="w-3 h-3 mr-1" /> Extracted</span>}
-                      {result.status === 'incomplete' && <span className="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-600 font-bold text-[10px] tracking-wider uppercase"><AlertCircle className="w-3 h-3 mr-1" /> Incomplete</span>}
+                    <td className="qc-td font-mono">{result.roomsDetected || '-'}</td>
+                    <td className="qc-td font-mono">{result.recordsExtracted}</td>
+                    <td className="qc-td text-right">
+                      {result.status === 'processing' && <span className="status-badge status-alert inline-flex items-center"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Processing</span>}
+                      {result.status === 'extracted' && <span className="status-badge status-action inline-flex items-center"><CheckCircle className="w-3 h-3 mr-1" /> Extracted</span>}
+                      {result.status === 'incomplete' && <span className="status-badge status-oos inline-flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Incomplete</span>}
                     </td>
                   </tr>
                 )}

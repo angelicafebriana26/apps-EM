@@ -427,33 +427,17 @@ export function TrendAnalysis() {
     const st = (status || "").toUpperCase();
     switch (st) {
       case "PASS":
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-black border border-gray-300">
-            PASS
-          </span>
-        );
+        return <span className="status-pass">PASS</span>;
       case "ALERT":
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-200">
-            ALERT
-          </span>
-        );
+        return <span className="status-alert">ALERT</span>;
       case "ACTION":
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-50 text-green-600 border border-green-200">
-            ACTION
-          </span>
-        );
+        return <span className="status-action">ACTION</span>;
       case "OOS":
-        return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-50 text-red-600 border border-red-200">
-            OOS
-          </span>
-        );
+        return <span className="status-oos">OOS</span>;
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-50 text-gray-600 border border-gray-200">
-            {status || "UNKNOWN"}
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
+            {status || "-"}
           </span>
         );
     }
@@ -486,7 +470,7 @@ export function TrendAnalysis() {
                 <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
                 Monthly Average:
               </span>
-              <span className="font-mono font-bold">{data.average}</span>
+              <span className="font-bold">{data.average}</span>
             </div>
           )}
 
@@ -496,14 +480,14 @@ export function TrendAnalysis() {
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
                 Monthly Maximum:
               </span>
-              <span className="font-mono font-bold">{data.max}</span>
+              <span className="font-bold">{data.max}</span>
             </div>
           )}
 
           {data.min !== null && (
             <div className="flex items-center justify-between gap-3 text-gray-600">
               <span className="text-gray-400">Monthly Minimum:</span>
-              <span className="font-mono font-semibold text-gray-700">{data.min}</span>
+              <span className="font-semibold text-gray-700">{data.min}</span>
             </div>
           )}
 
@@ -515,15 +499,15 @@ export function TrendAnalysis() {
               </div>
               <div className="flex justify-between text-blue-600">
                 <span>Alert Limit:</span>
-                <span className="font-mono font-bold">{activeCriteriaLimits.alert ?? "N/A"}</span>
+                <span className="font-bold">{activeCriteriaLimits.alert ?? "N/A"}</span>
               </div>
               <div className="flex justify-between text-green-600">
                 <span>Action Limit:</span>
-                <span className="font-mono font-bold">{activeCriteriaLimits.action ?? "N/A"}</span>
+                <span className="font-bold">{activeCriteriaLimits.action ?? "N/A"}</span>
               </div>
               <div className="flex justify-between text-red-600">
                 <span>Acceptance (OOS):</span>
-                <span className="font-mono font-bold">{activeCriteriaLimits.acceptance ?? "N/A"}</span>
+                <span className="font-bold">{activeCriteriaLimits.acceptance ?? "N/A"}</span>
               </div>
             </div>
           )}
@@ -560,14 +544,14 @@ export function TrendAnalysis() {
   return (
     <div className="space-y-6">
       {/* Header & Description */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <div className="qc-card p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-5 mb-6">
           <div>
-            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-orange-500" />
+            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-orange-600" />
               Trend Analysis
             </h2>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-500 mt-1">
               Query historical Environmental Monitoring data from Firestore by Year, Parameter, Room, Grade, and Month Range.
             </p>
           </div>
@@ -610,8 +594,8 @@ export function TrendAnalysis() {
               </button>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-50 border border-gray-200 rounded-full text-xs font-semibold text-gray-600">
-              <Database className="w-3.5 h-3.5 text-orange-500" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-50 border border-gray-200 rounded-full text-xs font-semibold text-gray-700">
+              <Database className="w-3.5 h-3.5 text-orange-600" />
               Total in DB: {loading ? "..." : measurements.length}
             </span>
           </div>
@@ -619,7 +603,7 @@ export function TrendAnalysis() {
 
         {/* Filters Configuration */}
         <div>
-          <h3 className="font-bold text-gray-700 flex items-center gap-2 mb-4 text-xs uppercase tracking-wider">
+          <h3 className="section-heading mb-4">
             <span className="w-2 h-3.5 bg-orange-500 rounded-full"></span>
             Filter Criteria
           </h3>
@@ -627,13 +611,13 @@ export function TrendAnalysis() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {/* Year Dropdown */}
             <div>
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="qc-filter-label">
                 Year
               </label>
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs focus:border-orange-500 focus:ring-orange-500 bg-white"
+                className="qc-select"
               >
                 <option value="">All Years</option>
                 {availableYears.map((year) => (
@@ -646,13 +630,13 @@ export function TrendAnalysis() {
 
             {/* Parameter Dropdown */}
             <div>
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="qc-filter-label">
                 Parameter
               </label>
               <select
                 value={selectedParameter}
                 onChange={(e) => setSelectedParameter(e.target.value)}
-                className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs focus:border-orange-500 focus:ring-orange-500 bg-white truncate"
+                className="qc-select truncate"
               >
                 <option value="">All Parameters</option>
                 {PARAMETERS.map((param) => (
@@ -665,13 +649,13 @@ export function TrendAnalysis() {
 
             {/* Room Dropdown */}
             <div>
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="qc-filter-label">
                 Room
               </label>
               <select
                 value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
-                className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs focus:border-orange-500 focus:ring-orange-500 bg-white truncate"
+                className="qc-select truncate"
               >
                 <option value="all">All Rooms</option>
                 {availableRooms.map((room) => (
@@ -684,13 +668,13 @@ export function TrendAnalysis() {
 
             {/* Grade Dropdown */}
             <div>
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="qc-filter-label">
                 Grade
               </label>
               <select
                 value={selectedGrade}
                 onChange={(e) => setSelectedGrade(e.target.value)}
-                className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs focus:border-orange-500 focus:ring-orange-500 bg-white"
+                className="qc-select"
               >
                 <option value="all">All Grades</option>
                 {GRADES.map((g) => (
@@ -703,13 +687,13 @@ export function TrendAnalysis() {
 
             {/* Month Range: From Month */}
             <div>
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="qc-filter-label">
                 From Month
               </label>
               <select
                 value={fromMonth}
                 onChange={(e) => setFromMonth(e.target.value)}
-                className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs focus:border-orange-500 focus:ring-orange-500 bg-white"
+                className="qc-select"
               >
                 <option value="">From (Any)</option>
                 {MONTHS_FILTER.map((m) => (
@@ -722,13 +706,13 @@ export function TrendAnalysis() {
 
             {/* Month Range: To Month */}
             <div>
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="qc-filter-label">
                 To Month
               </label>
               <select
                 value={toMonth}
                 onChange={(e) => setToMonth(e.target.value)}
-                className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs focus:border-orange-500 focus:ring-orange-500 bg-white"
+                className="qc-select"
               >
                 <option value="">To (Any)</option>
                 {MONTHS_FILTER.map((m) => (
@@ -757,7 +741,7 @@ export function TrendAnalysis() {
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                className="btn-secondary"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 Reset
@@ -765,7 +749,7 @@ export function TrendAnalysis() {
               <button
                 type="button"
                 onClick={handleApplyFilters}
-                className="inline-flex items-center gap-1.5 px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded shadow transition-colors cursor-pointer"
+                className="btn-primary"
               >
                 <Filter className="w-3.5 h-3.5" />
                 Apply Filters
@@ -789,11 +773,11 @@ export function TrendAnalysis() {
       )}
 
       {/* Matching Measurements and Trend Analysis Section */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col min-h-[300px]">
-        <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+      <div className="qc-card overflow-hidden flex flex-col min-h-[300px]">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
           <div className="flex items-center gap-3">
             <span className="w-2 h-4 bg-orange-500 rounded-full"></span>
-            <h3 className="font-bold text-gray-700">
+            <h3 className="font-bold text-gray-800 text-sm">
               Monthly Trend & Summary
             </h3>
             {displayMode === "EXCURSIONS" && (
@@ -839,7 +823,7 @@ export function TrendAnalysis() {
                   <button
                     type="button"
                     onClick={() => setDisplayMode("ALL")}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer shadow-xs"
+                    className="btn-primary"
                   >
                     View All Records
                   </button>
@@ -847,7 +831,7 @@ export function TrendAnalysis() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer shadow-xs"
+                  className="btn-secondary"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   Reset Filters
@@ -857,13 +841,13 @@ export function TrendAnalysis() {
           ) : (
             <div className="space-y-6">
               {/* Prominent Matching Count Card */}
-              <div className="bg-orange-50/50 border border-orange-200 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="bg-orange-50/50 border border-orange-200 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-6 h-6" />
+                  <div className="w-11 h-11 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-2xl font-bold text-gray-900 tracking-tight">
+                    <h4 className="text-xl font-bold text-gray-900 tracking-tight">
                       {filteredMeasurements.length} {displayMode === "EXCURSIONS" ? "excursion events" : "measurements"} found
                     </h4>
                     <p className="text-xs text-gray-500 mt-0.5">
@@ -933,7 +917,7 @@ export function TrendAnalysis() {
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-4 bg-indigo-600 rounded-full"></div>
+                      <div className="w-2 h-4 bg-orange-600 rounded-full"></div>
                       <div>
                         <span className="text-xs font-bold text-gray-800 uppercase tracking-wider">
                           Centralized EM Criteria Limits
@@ -949,7 +933,7 @@ export function TrendAnalysis() {
                       <div className="flex items-center gap-1.5 font-semibold text-blue-600">
                         <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
                         <span>Alert Level:</span>
-                        <span className="font-mono font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200 text-blue-700">
+                        <span className="font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200 text-blue-700">
                           {activeCriteriaLimits.alert !== null ? activeCriteriaLimits.alert : "N/A"}
                         </span>
                       </div>
@@ -958,7 +942,7 @@ export function TrendAnalysis() {
                       <div className="flex items-center gap-1.5 font-semibold text-green-600">
                         <span className="w-2.5 h-2.5 rounded-full bg-green-600"></span>
                         <span>Action Level:</span>
-                        <span className="font-mono font-bold bg-green-50 px-2 py-0.5 rounded border border-green-200 text-green-700">
+                        <span className="font-bold bg-green-50 px-2 py-0.5 rounded border border-green-200 text-green-700">
                           {activeCriteriaLimits.action !== null ? activeCriteriaLimits.action : "N/A"}
                         </span>
                       </div>
@@ -967,7 +951,7 @@ export function TrendAnalysis() {
                       <div className="flex items-center gap-1.5 font-semibold text-red-600">
                         <span className="w-2.5 h-2.5 rounded-full bg-red-600"></span>
                         <span>Acceptance Limit:</span>
-                        <span className="font-mono font-bold bg-red-50 px-2 py-0.5 rounded border border-red-200 text-red-700">
+                        <span className="font-bold bg-red-50 px-2 py-0.5 rounded border border-red-200 text-red-700">
                           {activeCriteriaLimits.acceptance !== null ? activeCriteriaLimits.acceptance : "N/A"}
                         </span>
                       </div>
@@ -977,11 +961,11 @@ export function TrendAnalysis() {
               ) : null}
 
               {/* Monthly Line Chart Section */}
-              <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+              <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-gray-100 pb-3 mb-4">
                   <div className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-orange-500" />
-                    <span className="font-bold text-sm text-gray-800">
+                    <BarChart3 className="w-4 h-4 text-orange-600" />
+                    <span className="font-bold text-sm text-gray-900">
                       Monthly Trend Curve (Jan – Dec)
                     </span>
                   </div>
@@ -1175,7 +1159,7 @@ export function TrendAnalysis() {
               </div>
 
               {/* Excursion Events Section */}
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs">
                 <div className="px-5 py-3.5 bg-gray-50/70 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4 text-red-600" />
@@ -1186,7 +1170,7 @@ export function TrendAnalysis() {
                       {allExcursionRecords.length} event{allExcursionRecords.length > 1 ? "s" : ""}
                     </span>
                   </div>
-                  <span className="text-[11px] text-gray-400">
+                  <span className="text-[11px] text-gray-500">
                     Click any excursion record to view detailed criteria and limits
                   </span>
                 </div>
@@ -1198,22 +1182,22 @@ export function TrendAnalysis() {
                     <p className="text-gray-400 text-[11px] mt-0.5">All matching records are in PASS status.</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto max-h-[300px] overflow-y-auto divide-y divide-gray-100">
-                    <table className="w-full text-xs text-left">
-                      <thead className="bg-gray-50/90 sticky top-0 border-b border-gray-200 text-gray-600">
+                  <div className="overflow-x-auto max-h-[300px] overflow-y-auto">
+                    <table className="qc-table">
+                      <thead>
                         <tr>
-                          <th className="px-4 py-2 font-bold uppercase tracking-wider">Date</th>
-                          <th className="px-4 py-2 font-bold uppercase tracking-wider">Room</th>
-                          <th className="px-4 py-2 font-bold uppercase tracking-wider text-center">Grade</th>
-                          <th className="px-4 py-2 font-bold uppercase tracking-wider">Parameter</th>
-                          <th className="px-4 py-2 font-bold uppercase tracking-wider text-right">Result</th>
-                          <th className="px-4 py-2 font-bold text-blue-600 uppercase tracking-wider text-right">Alert Level</th>
-                          <th className="px-4 py-2 font-bold text-green-600 uppercase tracking-wider text-right">Action Level</th>
-                          <th className="px-4 py-2 font-bold text-red-600 uppercase tracking-wider text-right">Acceptance Criteria</th>
-                          <th className="px-4 py-2 font-bold uppercase tracking-wider text-center">Final Status</th>
+                          <th className="qc-th">Date</th>
+                          <th className="qc-th">Room</th>
+                          <th className="qc-th text-center">Grade</th>
+                          <th className="qc-th">Parameter</th>
+                          <th className="qc-th text-right">Result</th>
+                          <th className="qc-th text-right text-blue-600">Alert Level</th>
+                          <th className="qc-th text-right text-green-600">Action Level</th>
+                          <th className="qc-th text-right text-red-600">Acceptance Criteria</th>
+                          <th className="qc-th text-center">Final Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-100 bg-white">
+                      <tbody>
                         {allExcursionRecords.map((rec) => {
                           const lim = getRecordLimits(rec);
                           const st = (rec.final_status || rec.calculated_status || "").toUpperCase();
@@ -1221,35 +1205,35 @@ export function TrendAnalysis() {
                             <tr
                               key={rec.measurement_id}
                               onClick={() => setSelectedExcursion(rec)}
-                              className="hover:bg-orange-50/60 cursor-pointer transition-colors"
+                              className="cursor-pointer"
                             >
-                              <td className="px-4 py-2.5 font-medium text-gray-800 whitespace-nowrap">
+                              <td className="qc-td font-medium text-gray-900 whitespace-nowrap">
                                 {rec.measurement_date || "-"}
                               </td>
-                              <td className="px-4 py-2.5 text-gray-900 font-semibold">
+                              <td className="qc-td font-semibold text-gray-900">
                                 {rec.room_name || "-"}
                               </td>
-                              <td className="px-4 py-2.5 text-center font-bold">
+                              <td className="qc-td text-center font-bold">
                                 <span className="px-2 py-0.5 bg-gray-100 text-gray-800 rounded text-[10px]">
                                   Grade {rec.room_grade || "-"}
                                 </span>
                               </td>
-                              <td className="px-4 py-2.5 text-gray-700 truncate max-w-[160px]">
+                              <td className="qc-td text-gray-700 truncate max-w-[160px]">
                                 {rec.parameter_name}
                               </td>
-                              <td className="px-4 py-2.5 text-right font-mono font-bold text-gray-900">
+                              <td className="qc-td text-right font-bold text-gray-900">
                                 {rec.result !== null ? rec.result : "-"} {rec.unit || ""}
                               </td>
-                              <td className="px-4 py-2.5 text-right font-mono text-blue-600">
+                              <td className="qc-td text-right text-blue-600">
                                 {lim.alert !== null ? lim.alert : "-"}
                               </td>
-                              <td className="px-4 py-2.5 text-right font-mono text-green-600">
+                              <td className="qc-td text-right text-green-600">
                                 {lim.action !== null ? lim.action : "-"}
                               </td>
-                              <td className="px-4 py-2.5 text-right font-mono font-bold text-red-600">
+                              <td className="qc-td text-right font-bold text-red-600">
                                 {lim.acceptance !== null ? lim.acceptance : "-"}
                               </td>
-                              <td className="px-4 py-2.5 text-center">
+                              <td className="qc-td text-center">
                                 {getStatusBadge(st)}
                               </td>
                             </tr>
@@ -1262,10 +1246,10 @@ export function TrendAnalysis() {
               </div>
 
               {/* Monthly Summary Table */}
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs">
                 <div className="px-5 py-3.5 bg-gray-50/70 border-b border-gray-200 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-orange-500" />
+                    <Calendar className="w-4 h-4 text-orange-600" />
                     <h4 className="font-bold text-xs text-gray-800 uppercase tracking-wider">
                       Monthly Summary Breakdown
                     </h4>
@@ -1276,136 +1260,107 @@ export function TrendAnalysis() {
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-xs text-left">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                  <table className="qc-table">
+                    <thead>
                       <tr>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-gray-700 uppercase tracking-wider"
-                        >
+                        <th scope="col" className="qc-th">
                           Month
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-gray-700 uppercase tracking-wider text-center"
-                        >
+                        <th scope="col" className="qc-th text-center">
                           Measurements
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-orange-700 uppercase tracking-wider text-right"
-                        >
+                        <th scope="col" className="qc-th text-right text-orange-700">
                           Average
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-gray-700 uppercase tracking-wider text-right"
-                        >
+                        <th scope="col" className="qc-th text-right">
                           Min
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-blue-700 uppercase tracking-wider text-right"
-                        >
+                        <th scope="col" className="qc-th text-right text-blue-700">
                           Max
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-gray-900 uppercase tracking-wider text-center"
-                        >
+                        <th scope="col" className="qc-th text-center text-gray-900">
                           PASS
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-blue-600 uppercase tracking-wider text-center"
-                        >
+                        <th scope="col" className="qc-th text-center text-blue-600">
                           ALERT
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-green-600 uppercase tracking-wider text-center"
-                        >
+                        <th scope="col" className="qc-th text-center text-green-600">
                           ACTION
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-2.5 font-bold text-red-600 uppercase tracking-wider text-center"
-                        >
+                        <th scope="col" className="qc-th text-center text-red-600">
                           OOS
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 bg-white">
+                    <tbody>
                       {monthlyStats.map((stat) => (
                         <tr
                           key={stat.monthNum}
-                          className={`hover:bg-gray-50/70 transition-colors ${
-                            stat.measurements === 0 ? "opacity-60 bg-gray-50/20" : ""
-                          }`}
+                          className={stat.measurements === 0 ? "opacity-60 bg-gray-50/20" : ""}
                         >
-                          <td className="px-4 py-2.5 font-semibold text-gray-900 whitespace-nowrap">
+                          <td className="qc-td font-semibold text-gray-900 whitespace-nowrap">
                             {stat.fullLabel}
                           </td>
-                          <td className="px-4 py-2.5 text-center font-mono font-medium">
+                          <td className="qc-td text-center font-medium">
                             {stat.measurements > 0 ? (
                               stat.measurements
                             ) : (
                               <span className="text-gray-300">-</span>
                             )}
                           </td>
-                          <td className="px-4 py-2.5 text-right font-mono font-bold text-gray-800">
+                          <td className="qc-td text-right font-bold text-gray-800">
                             {stat.average !== null ? (
                               stat.average.toFixed(2)
                             ) : (
                               <span className="text-gray-300 font-normal">-</span>
                             )}
                           </td>
-                          <td className="px-4 py-2.5 text-right font-mono text-gray-600">
+                          <td className="qc-td text-right text-gray-600">
                             {stat.min !== null ? stat.min : <span className="text-gray-300">-</span>}
                           </td>
-                          <td className="px-4 py-2.5 text-right font-mono font-bold text-blue-700">
+                          <td className="qc-td text-right font-bold text-blue-700">
                             {stat.max !== null ? stat.max : <span className="text-gray-300 font-normal">-</span>}
                           </td>
-                          <td className="px-4 py-2.5 text-center">
+                          <td className="qc-td text-center">
                             {stat.passCount > 0 ? (
                               <span className="inline-flex px-2 py-0.5 rounded font-bold text-[10px] bg-gray-100 text-black border border-gray-300">
                                 {stat.passCount}
                               </span>
                             ) : stat.measurements > 0 ? (
-                              <span className="text-gray-400 font-mono text-[11px]">0</span>
+                              <span className="text-gray-400 text-[11px]">0</span>
                             ) : (
                               <span className="text-gray-300">-</span>
                             )}
                           </td>
-                          <td className="px-4 py-2.5 text-center">
+                          <td className="qc-td text-center">
                             {stat.alertCount > 0 ? (
                               <span className="inline-flex px-2 py-0.5 rounded font-bold text-[10px] bg-blue-50 text-blue-600 border border-blue-200">
                                 {stat.alertCount}
                               </span>
                             ) : stat.measurements > 0 ? (
-                              <span className="text-gray-400 font-mono text-[11px]">0</span>
+                              <span className="text-gray-400 text-[11px]">0</span>
                             ) : (
                               <span className="text-gray-300">-</span>
                             )}
                           </td>
-                          <td className="px-4 py-2.5 text-center">
+                          <td className="qc-td text-center">
                             {stat.actionCount > 0 ? (
                               <span className="inline-flex px-2 py-0.5 rounded font-bold text-[10px] bg-green-50 text-green-600 border border-green-200">
                                 {stat.actionCount}
                               </span>
                             ) : stat.measurements > 0 ? (
-                              <span className="text-gray-400 font-mono text-[11px]">0</span>
+                              <span className="text-gray-400 text-[11px]">0</span>
                             ) : (
                               <span className="text-gray-300">-</span>
                             )}
                           </td>
-                          <td className="px-4 py-2.5 text-center">
+                          <td className="qc-td text-center">
                             {stat.oosCount > 0 ? (
                               <span className="inline-flex px-2 py-0.5 rounded font-extrabold text-[10px] bg-red-100 text-red-700 border border-red-300">
                                 {stat.oosCount}
                               </span>
                             ) : stat.measurements > 0 ? (
-                              <span className="text-gray-400 font-mono text-[11px]">0</span>
+                              <span className="text-gray-400 text-[11px]">0</span>
                             ) : (
                               <span className="text-gray-300">-</span>
                             )}
@@ -1416,31 +1371,31 @@ export function TrendAnalysis() {
                     {/* Summary Total Row */}
                     <tfoot className="bg-gray-50/90 font-bold border-t-2 border-gray-200">
                       <tr>
-                        <td className="px-4 py-3 text-gray-900 uppercase tracking-wider text-[11px]">
+                        <td className="qc-td text-gray-900 uppercase tracking-wider text-[11px]">
                           Total / Overall
                         </td>
-                        <td className="px-4 py-3 text-center font-mono text-gray-900">
+                        <td className="qc-td text-center text-gray-900">
                           {totalSummary.measurements}
                         </td>
-                        <td className="px-4 py-3 text-right font-mono text-orange-700">
+                        <td className="qc-td text-right text-orange-700">
                           {totalSummary.average !== null ? totalSummary.average.toFixed(2) : "-"}
                         </td>
-                        <td className="px-4 py-3 text-right font-mono text-gray-700">
+                        <td className="qc-td text-right text-gray-700">
                           {totalSummary.min !== null ? totalSummary.min : "-"}
                         </td>
-                        <td className="px-4 py-3 text-right font-mono text-blue-700">
+                        <td className="qc-td text-right text-blue-700">
                           {totalSummary.max !== null ? totalSummary.max : "-"}
                         </td>
-                        <td className="px-4 py-3 text-center text-black font-mono">
+                        <td className="qc-td text-center text-black">
                           {totalSummary.passCount}
                         </td>
-                        <td className="px-4 py-3 text-center text-blue-600 font-mono">
+                        <td className="qc-td text-center text-blue-600">
                           {totalSummary.alertCount}
                         </td>
-                        <td className="px-4 py-3 text-center text-green-600 font-mono">
+                        <td className="qc-td text-center text-green-600">
                           {totalSummary.actionCount}
                         </td>
-                        <td className="px-4 py-3 text-center text-red-600 font-mono">
+                        <td className="qc-td text-center text-red-600">
                           {totalSummary.oosCount}
                         </td>
                       </tr>
@@ -1520,7 +1475,7 @@ export function TrendAnalysis() {
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                       Measured Result
                     </span>
-                    <span className="font-mono font-bold text-base text-gray-900">
+                    <span className="font-bold text-base text-gray-900">
                       {selectedExcursion.result !== null ? selectedExcursion.result : "-"}{" "}
                       <span className="text-xs font-normal text-gray-500">
                         {selectedExcursion.unit || ""}
@@ -1546,21 +1501,21 @@ export function TrendAnalysis() {
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-lg text-center">
                       <div className="text-[10px] font-bold text-blue-600 uppercase">Alert Level</div>
-                      <div className="text-base font-mono font-bold text-blue-700 mt-0.5">
+                      <div className="text-base font-bold text-blue-700 mt-0.5">
                         {lim.alert !== null ? lim.alert : "N/A"}
                       </div>
                     </div>
 
                     <div className="p-3 bg-green-50/70 border border-green-200 rounded-lg text-center">
                       <div className="text-[10px] font-bold text-green-600 uppercase">Action Level</div>
-                      <div className="text-base font-mono font-bold text-green-700 mt-0.5">
+                      <div className="text-base font-bold text-green-700 mt-0.5">
                         {lim.action !== null ? lim.action : "N/A"}
                       </div>
                     </div>
 
                     <div className="p-3 bg-red-50/70 border border-red-200 rounded-lg text-center">
                       <div className="text-[10px] font-bold text-red-600 uppercase">Acceptance (OOS)</div>
-                      <div className="text-base font-mono font-bold text-red-700 mt-0.5">
+                      <div className="text-base font-bold text-red-700 mt-0.5">
                         {lim.acceptance !== null ? lim.acceptance : "N/A"}
                       </div>
                     </div>

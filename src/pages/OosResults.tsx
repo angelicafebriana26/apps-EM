@@ -627,9 +627,9 @@ export function OosResults() {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-8rem)]">
+    <div className="qc-card overflow-hidden flex flex-col h-[calc(100vh-8rem)]">
       {/* Tabs Header */}
-      <div className="border-b border-gray-200 bg-gray-50/50">
+      <div className="border-b border-gray-200 bg-gray-50/60">
         <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
           <button
             type="button"
@@ -641,13 +641,13 @@ export function OosResults() {
               activeTab === "records"
                 ? "border-orange-500 text-orange-600 font-bold"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
-              "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors cursor-pointer"
+              "whitespace-nowrap py-3.5 px-1 border-b-2 font-medium text-xs flex items-center transition-colors cursor-pointer"
             )}
           >
             <AlertCircle className="mr-2 h-4 w-4" />
             OOS Records
             {microbiologicalOosRecords.length > 0 && (
-              <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+              <span className="ml-2 px-2 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-700 border border-red-200">
                 {microbiologicalOosRecords.length}
               </span>
             )}
@@ -662,7 +662,7 @@ export function OosResults() {
               activeTab === "microorganism"
                 ? "border-orange-500 text-orange-600 font-bold"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
-              "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors cursor-pointer"
+              "whitespace-nowrap py-3.5 px-1 border-b-2 font-medium text-xs flex items-center transition-colors cursor-pointer"
             )}
           >
             <Bug className="mr-2 h-4 w-4" />
@@ -676,18 +676,18 @@ export function OosResults() {
         {activeTab === "records" && (
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Filter Toolbar */}
-            <div className="p-4 sm:p-6 border-b border-gray-100 bg-gray-50/30">
+            <div className="p-4 sm:p-5 border-b border-gray-200 bg-gray-50/40">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 flex-1">
                   {/* Year Filter */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Year
                     </label>
                     <select
                       value={filterYear}
                       onChange={(e) => setFilterYear(e.target.value)}
-                      className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:outline-none focus:ring-orange-500 bg-white"
+                      className="qc-select"
                     >
                       <option value="">All Years</option>
                       {availableYears.map((yr) => (
@@ -700,13 +700,13 @@ export function OosResults() {
 
                   {/* Month Filter */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Month
                     </label>
                     <select
                       value={filterMonth}
                       onChange={(e) => setFilterMonth(e.target.value)}
-                      className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:outline-none focus:ring-orange-500 bg-white"
+                      className="qc-select"
                     >
                       <option value="">All Months</option>
                       {MONTH_OPTIONS.map((m) => (
@@ -719,13 +719,13 @@ export function OosResults() {
 
                   {/* Room Filter */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Room
                     </label>
                     <select
                       value={filterRoom}
                       onChange={(e) => setFilterRoom(e.target.value)}
-                      className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:outline-none focus:ring-orange-500 bg-white truncate"
+                      className="qc-select truncate"
                     >
                       <option value="">All Rooms</option>
                       {availableRooms.map((rm) => (
@@ -738,13 +738,13 @@ export function OosResults() {
 
                   {/* Parameter Filter */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Parameter
                     </label>
                     <select
                       value={filterParameter}
                       onChange={(e) => setFilterParameter(e.target.value)}
-                      className="block w-full rounded border border-gray-200 py-2 pl-3 pr-8 text-xs text-gray-700 focus:border-orange-500 focus:outline-none focus:ring-orange-500 bg-white"
+                      className="qc-select"
                     >
                       <option value="">All Microbiological Parameters</option>
                       {MICROBIOLOGICAL_PARAMETERS.map((p) => (
@@ -762,7 +762,7 @@ export function OosResults() {
                     <button
                       type="button"
                       onClick={handleResetFilters}
-                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                      className="btn-secondary"
                       title="Reset filters"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
@@ -818,7 +818,7 @@ export function OosResults() {
 
             {/* OOS Records Table Container */}
             <div className="flex-1 overflow-auto p-4 sm:p-6">
-              <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-xs">
+              <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-xs">
                 {loading ? (
                   <div className="py-20 text-center">
                     <Loader2 className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-3" />
@@ -837,7 +837,7 @@ export function OosResults() {
                       <button
                         type="button"
                         onClick={handleResetFilters}
-                        className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                        className="mt-4 btn-primary"
                       >
                         <RotateCcw className="w-3.5 h-3.5" />
                         Clear Filters
@@ -845,165 +845,167 @@ export function OosResults() {
                     )}
                   </div>
                 ) : (
-                  <table className="w-full text-xs text-left relative divide-y divide-gray-200">
-                    <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
-                      <tr>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Date of EM Measurement
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Sample Submission Date
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Room
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Parameter
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap text-right">
-                          Result
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Unit
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Applicable Limit
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Microorganism ID Status
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                          Microorganism Name
-                        </th>
-                        <th scope="col" className="px-3 py-3 font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap text-center">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-100">
-                      {filteredOosRecords.map((record) => {
-                        const applicableLimit = getApplicableLimit(record);
-                        const displayUnit = getDisplayUnit(record);
+                  <div className="overflow-x-auto">
+                    <table className="qc-table">
+                      <thead>
+                        <tr>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Date of EM Measurement
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Sample Submission Date
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Room
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Parameter
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap text-right">
+                            Result
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Unit
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Applicable Limit
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Microorganism ID Status
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap">
+                            Microorganism Name
+                          </th>
+                          <th scope="col" className="qc-th whitespace-nowrap text-center">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredOosRecords.map((record) => {
+                          const applicableLimit = getApplicableLimit(record);
+                          const displayUnit = getDisplayUnit(record);
 
-                        const idStatus = (record.microorganism_id_status || "").toUpperCase();
+                          const idStatus = (record.microorganism_id_status || "").toUpperCase();
 
-                        return (
-                          <tr
-                            key={record.measurement_id}
-                            className="hover:bg-red-50/40 transition-colors"
-                          >
-                            {/* 1. Date of EM Measurement */}
-                            <td className="px-3 py-3 font-mono font-medium text-gray-900 whitespace-nowrap">
-                              {record.measurement_date || "-"}
-                            </td>
+                          return (
+                            <tr
+                              key={record.measurement_id}
+                              className="hover:bg-red-50/30 transition-colors"
+                            >
+                              {/* 1. Date of EM Measurement */}
+                              <td className="qc-td font-mono font-medium text-gray-900 whitespace-nowrap">
+                                {record.measurement_date || "-"}
+                              </td>
 
-                            {/* 2. Sample Submission Date */}
-                            <td className="px-3 py-3 whitespace-nowrap">
-                              {record.sample_submission_date ? (
-                                <span className="font-mono font-medium text-gray-800">
-                                  {record.sample_submission_date}
-                                </span>
-                              ) : (
-                                <span className="text-gray-400 italic">Not entered</span>
-                              )}
-                            </td>
-
-                            {/* 3. Room */}
-                            <td className="px-3 py-3 font-semibold text-gray-900 whitespace-nowrap">
-                              <div className="flex items-center gap-1.5">
-                                <span>{record.room_name || "-"}</span>
-                                {record.room_grade && (
-                                  <span className="px-1.5 py-0.2 bg-gray-100 text-gray-600 rounded text-[10px] font-bold border border-gray-200">
-                                    Gr {record.room_grade}
+                              {/* 2. Sample Submission Date */}
+                              <td className="qc-td whitespace-nowrap">
+                                {record.sample_submission_date ? (
+                                  <span className="font-mono font-medium text-gray-800">
+                                    {record.sample_submission_date}
                                   </span>
+                                ) : (
+                                  <span className="text-gray-400 italic">Not entered</span>
                                 )}
-                              </div>
-                            </td>
+                              </td>
 
-                            {/* 4. Parameter */}
-                            <td className="px-3 py-3 font-medium text-gray-800 whitespace-nowrap">
-                              <span className="px-2 py-0.5 bg-orange-50 text-orange-800 border border-orange-200 rounded font-semibold text-[11px]">
-                                {record.parameter_name}
-                              </span>
-                            </td>
+                              {/* 3. Room */}
+                              <td className="qc-td font-semibold text-gray-900 whitespace-nowrap">
+                                <div className="flex items-center gap-1.5">
+                                  <span>{record.room_name || "-"}</span>
+                                  {record.room_grade && (
+                                    <span className="px-1.5 py-0.2 bg-gray-100 text-gray-600 rounded text-[10px] font-bold border border-gray-200">
+                                      Gr {record.room_grade}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
 
-                            {/* 5. Result */}
-                            <td className="px-3 py-3 font-mono font-bold text-red-600 text-right whitespace-nowrap">
-                              {record.result !== null && record.result !== undefined
-                                ? record.result
-                                : "-"}
-                            </td>
-
-                            {/* 6. Unit */}
-                            <td className="px-3 py-3 text-gray-600 whitespace-nowrap font-mono text-[11px]">
-                              {displayUnit}
-                            </td>
-
-                            {/* 7. Applicable Limit */}
-                            <td className="px-3 py-3 font-mono font-semibold text-gray-700 whitespace-nowrap">
-                              {applicableLimit}
-                            </td>
-
-                            {/* 8. Microorganism ID Status */}
-                            <td className="px-3 py-3 whitespace-nowrap">
-                              {idStatus === "IDENTIFIED" ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                  IDENTIFIED
+                              {/* 4. Parameter */}
+                              <td className="qc-td font-medium text-gray-800 whitespace-nowrap">
+                                <span className="px-2 py-0.5 bg-orange-50 text-orange-800 border border-orange-200 rounded font-semibold text-[11px]">
+                                  {record.parameter_name}
                                 </span>
-                              ) : idStatus === "NOT IDENTIFIED" ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                                  Not identified
-                                </span>
-                              ) : (
-                                <span className="text-gray-400 italic">Not entered</span>
-                              )}
-                            </td>
+                              </td>
 
-                            {/* 9. Microorganism Name */}
-                            <td className="px-3 py-3">
-                              {idStatus === "IDENTIFIED" ? (
-                                (() => {
-                                  const orgList = getOrganismList(record);
-                                  if (orgList.length > 0) {
-                                    return (
-                                      <div className="flex flex-wrap gap-1.5 max-w-xs py-0.5">
-                                        {orgList.map((name, idx) => (
-                                          <span
-                                            key={idx}
-                                            className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold text-gray-900 bg-gray-100 border border-gray-200 font-serif italic shadow-2xs"
-                                          >
-                                            {name}
-                                          </span>
-                                        ))}
-                                      </div>
-                                    );
-                                  }
-                                  return <span className="text-gray-400 italic">Not entered</span>;
-                                })()
-                              ) : idStatus === "NOT IDENTIFIED" ? (
-                                <span className="text-gray-500 italic">Not identified</span>
-                              ) : (
-                                <span className="text-gray-400 italic">Not entered</span>
-                              )}
-                            </td>
+                              {/* 5. Result */}
+                              <td className="qc-td font-mono font-bold text-red-600 text-right whitespace-nowrap">
+                                {record.result !== null && record.result !== undefined
+                                  ? record.result
+                                  : "-"}
+                              </td>
 
-                            {/* Action column */}
-                            <td className="px-3 py-3 text-center whitespace-nowrap">
-                              <button
-                                type="button"
-                                onClick={() => handleOpenEditModal(record)}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 hover:text-orange-800 border border-orange-200 rounded shadow-xs transition-colors cursor-pointer"
-                                title="Edit Microorganism Identification"
-                              >
-                                <Pencil className="w-3 h-3 text-orange-600" />
-                                Edit
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                              {/* 6. Unit */}
+                              <td className="qc-td text-gray-600 whitespace-nowrap font-mono text-[11px]">
+                                {displayUnit}
+                              </td>
+
+                              {/* 7. Applicable Limit */}
+                              <td className="qc-td font-mono font-semibold text-gray-700 whitespace-nowrap">
+                                {applicableLimit}
+                              </td>
+
+                              {/* 8. Microorganism ID Status */}
+                              <td className="qc-td whitespace-nowrap">
+                                {idStatus === "IDENTIFIED" ? (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    IDENTIFIED
+                                  </span>
+                                ) : idStatus === "NOT IDENTIFIED" ? (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                    Not identified
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-400 italic">Not entered</span>
+                                )}
+                              </td>
+
+                              {/* 9. Microorganism Name */}
+                              <td className="qc-td">
+                                {idStatus === "IDENTIFIED" ? (
+                                  (() => {
+                                    const orgList = getOrganismList(record);
+                                    if (orgList.length > 0) {
+                                      return (
+                                        <div className="flex flex-wrap gap-1.5 max-w-xs py-0.5">
+                                          {orgList.map((name, idx) => (
+                                            <span
+                                              key={idx}
+                                              className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold text-gray-900 bg-gray-100 border border-gray-200 font-serif italic shadow-2xs"
+                                            >
+                                              {name}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      );
+                                    }
+                                    return <span className="text-gray-400 italic">Not entered</span>;
+                                  })()
+                                ) : idStatus === "NOT IDENTIFIED" ? (
+                                  <span className="text-gray-500 italic">Not identified</span>
+                                ) : (
+                                  <span className="text-gray-400 italic">Not entered</span>
+                                )}
+                              </td>
+
+                              {/* Action column */}
+                              <td className="qc-td text-center whitespace-nowrap">
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenEditModal(record)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 hover:text-orange-800 border border-orange-200 rounded shadow-xs transition-colors cursor-pointer"
+                                  title="Edit Microorganism Identification"
+                                >
+                                  <Pencil className="w-3 h-3 text-orange-600" />
+                                  Edit
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             </div>
@@ -1014,18 +1016,18 @@ export function OosResults() {
         {activeTab === "microorganism" && (
           <div className="flex-1 flex flex-col overflow-y-auto">
             {/* Filter Bar */}
-            <div className="p-4 sm:p-5 border-b border-gray-200 bg-gray-50/50">
+            <div className="p-4 sm:p-5 border-b border-gray-200 bg-gray-50/40">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 flex-1">
                   {/* 1. Year */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Year
                     </label>
                     <select
                       value={analysisYear}
                       onChange={(e) => setAnalysisYear(e.target.value)}
-                      className="block w-full rounded border border-gray-300 py-1.5 px-2.5 text-xs text-gray-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white font-medium"
+                      className="qc-select"
                     >
                       <option value="">All Years</option>
                       {availableYears.map((yr) => (
@@ -1038,13 +1040,13 @@ export function OosResults() {
 
                   {/* 2. Month */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Month
                     </label>
                     <select
                       value={analysisMonth}
                       onChange={(e) => setAnalysisMonth(e.target.value)}
-                      className="block w-full rounded border border-gray-300 py-1.5 px-2.5 text-xs text-gray-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white font-medium"
+                      className="qc-select"
                     >
                       <option value="">All Months</option>
                       {MONTH_OPTIONS.map((m) => (
@@ -1057,13 +1059,13 @@ export function OosResults() {
 
                   {/* 3. Room */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Room
                     </label>
                     <select
                       value={analysisRoom}
                       onChange={(e) => setAnalysisRoom(e.target.value)}
-                      className="block w-full rounded border border-gray-300 py-1.5 px-2.5 text-xs text-gray-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white font-medium"
+                      className="qc-select"
                     >
                       <option value="">All Rooms</option>
                       {availableRooms.map((room) => (
@@ -1076,13 +1078,13 @@ export function OosResults() {
 
                   {/* 4. Parameter */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Parameter
                     </label>
                     <select
                       value={analysisParameter}
                       onChange={(e) => setAnalysisParameter(e.target.value)}
-                      className="block w-full rounded border border-gray-300 py-1.5 px-2.5 text-xs text-gray-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white font-medium"
+                      className="qc-select"
                     >
                       <option value="">All Microbiological Parameters</option>
                       <option value="부유균">부유균 (Airborne)</option>
@@ -1093,13 +1095,13 @@ export function OosResults() {
 
                   {/* 5. Microorganism */}
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label className="qc-label">
                       Microorganism
                     </label>
                     <select
                       value={analysisOrganism}
                       onChange={(e) => setAnalysisOrganism(e.target.value)}
-                      className="block w-full rounded border border-gray-300 py-1.5 px-2.5 text-xs text-gray-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white font-medium italic font-serif"
+                      className="qc-select italic font-serif"
                     >
                       <option value="" className="font-sans not-italic">All Microorganisms</option>
                       {availableMicroorganisms.map((org) => (
@@ -1117,7 +1119,7 @@ export function OosResults() {
                     <button
                       type="button"
                       onClick={handleResetAnalysisFilters}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 rounded shadow-2xs transition-colors cursor-pointer"
+                      className="btn-secondary"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       Reset Filters
@@ -1132,7 +1134,7 @@ export function OosResults() {
               {/* Summary Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* 1. Total Microbiological OOS */}
-                <div className="bg-white p-3.5 rounded-lg border border-gray-200 shadow-2xs">
+                <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
                       Total Microbio OOS
@@ -1149,7 +1151,7 @@ export function OosResults() {
                 </div>
 
                 {/* 2. Identified */}
-                <div className="bg-white p-3.5 rounded-lg border border-emerald-200 shadow-2xs">
+                <div className="bg-white p-3.5 rounded-xl border border-emerald-200 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">
                       Identified
@@ -1166,7 +1168,7 @@ export function OosResults() {
                 </div>
 
                 {/* 3. Not Identified */}
-                <div className="bg-white p-3.5 rounded-lg border border-amber-200 shadow-2xs">
+                <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">
                       Not Identified
@@ -1183,7 +1185,7 @@ export function OosResults() {
                 </div>
 
                 {/* 4. Pending / Not Entered */}
-                <div className="bg-white p-3.5 rounded-lg border border-gray-200 shadow-2xs">
+                <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
                       Pending / Not Entered
@@ -1200,7 +1202,7 @@ export function OosResults() {
                 </div>
 
                 {/* 5. Unique Microorganisms */}
-                <div className="bg-white p-3.5 rounded-lg border border-violet-200 shadow-2xs">
+                <div className="bg-white p-3.5 rounded-xl border border-violet-200 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-violet-700 uppercase tracking-wider block">
                       Unique Organisms
@@ -1217,7 +1219,7 @@ export function OosResults() {
                 </div>
 
                 {/* 6. Affected Rooms */}
-                <div className="bg-white p-3.5 rounded-lg border border-blue-200 shadow-2xs">
+                <div className="bg-white p-3.5 rounded-xl border border-blue-200 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider block">
                       Affected Rooms
@@ -1236,7 +1238,7 @@ export function OosResults() {
 
               {/* Check if any identified events exist */}
               {analysisIdentifiedEvents.length === 0 ? (
-                <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-2xs">
+                <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-xs">
                   <div className="mx-auto w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-600 mb-3">
                     <Microscope className="w-6 h-6" />
                   </div>
@@ -1252,7 +1254,7 @@ export function OosResults() {
               ) : (
                 <div className="space-y-6">
                   {/* Section 1: Most Frequently Detected Microorganisms */}
-                  <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
+                  <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
                     <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                       <div>
                         <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
@@ -1268,32 +1270,32 @@ export function OosResults() {
                       </span>
                     </div>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-xs text-left">
-                        <thead className="bg-gray-50/90 text-[11px] text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      <table className="qc-table">
+                        <thead>
                           <tr>
-                            <th scope="col" className="px-4 py-3 font-bold w-12 text-center">#</th>
-                            <th scope="col" className="px-4 py-3 font-bold">Microorganism</th>
-                            <th scope="col" className="px-4 py-3 font-bold text-center w-28">Occurrences</th>
-                            <th scope="col" className="px-4 py-3 font-bold">Rooms Detected</th>
+                            <th scope="col" className="qc-th w-12 text-center">#</th>
+                            <th scope="col" className="qc-th">Microorganism</th>
+                            <th scope="col" className="qc-th text-center w-28">Occurrences</th>
+                            <th scope="col" className="qc-th">Rooms Detected</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 bg-white">
+                        <tbody>
                           {mostFrequentOrganisms.map((item, idx) => (
-                            <tr key={item.organism} className="hover:bg-gray-50/60 transition-colors">
-                              <td className="px-4 py-3 font-mono font-bold text-gray-400 text-center">
+                            <tr key={item.organism}>
+                              <td className="qc-td font-mono font-bold text-gray-400 text-center">
                                 {idx + 1}
                               </td>
-                              <td className="px-4 py-3">
+                              <td className="qc-td">
                                 <span className="font-serif italic font-bold text-gray-900 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded text-xs inline-block">
                                   {item.organism}
                                 </span>
                               </td>
-                              <td className="px-4 py-3 text-center whitespace-nowrap">
+                              <td className="qc-td text-center whitespace-nowrap">
                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-orange-100 text-orange-900 border border-orange-200">
                                   {item.occurrences}
                                 </span>
                               </td>
-                              <td className="px-4 py-3">
+                              <td className="qc-td">
                                 <div className="flex flex-wrap items-center gap-1.5">
                                   <span className="text-[11px] font-semibold text-gray-500 mr-1">
                                     {item.roomCount} {item.roomCount === 1 ? "room" : "rooms"}:
@@ -1316,7 +1318,7 @@ export function OosResults() {
                   </div>
 
                   {/* Section 2: Microorganism Occurrence by Room */}
-                  <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
+                  <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
                     <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                       <div>
                         <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
@@ -1332,18 +1334,18 @@ export function OosResults() {
                       </span>
                     </div>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-xs text-left">
-                        <thead className="bg-gray-50/90 text-[11px] text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      <table className="qc-table">
+                        <thead>
                           <tr>
-                            <th scope="col" className="px-4 py-3 font-bold">Room</th>
-                            <th scope="col" className="px-4 py-3 font-bold">Microorganism</th>
-                            <th scope="col" className="px-4 py-3 font-bold text-center w-36">Occurrences</th>
+                            <th scope="col" className="qc-th">Room</th>
+                            <th scope="col" className="qc-th">Microorganism</th>
+                            <th scope="col" className="qc-th text-center w-36">Occurrences</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 bg-white">
+                        <tbody>
                           {occurrencesByRoom.map((item) => (
-                            <tr key={`${item.room}:::${item.organism}`} className="hover:bg-gray-50/60 transition-colors">
-                              <td className="px-4 py-3">
+                            <tr key={`${item.room}:::${item.organism}`}>
+                              <td className="qc-td">
                                 <div className="flex items-center gap-1.5">
                                   <span className="font-bold text-gray-900">{item.room}</span>
                                   {item.room_grade && (
@@ -1353,12 +1355,12 @@ export function OosResults() {
                                   )}
                                 </div>
                               </td>
-                              <td className="px-4 py-3">
+                              <td className="qc-td">
                                 <span className="font-serif italic font-semibold text-gray-900">
                                   {item.organism}
                                 </span>
                               </td>
-                              <td className="px-4 py-3 text-center whitespace-nowrap">
+                              <td className="qc-td text-center whitespace-nowrap">
                                 <div className="inline-flex items-center gap-2">
                                   <span className="font-mono font-bold text-gray-900 text-xs">
                                     {item.occurrences}
@@ -1378,7 +1380,7 @@ export function OosResults() {
                   </div>
 
                   {/* Section 3: Occurrence by Parameter */}
-                  <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
+                  <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
                     <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                       <div>
                         <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
@@ -1394,46 +1396,46 @@ export function OosResults() {
                       </span>
                     </div>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-xs text-left">
-                        <thead className="bg-gray-50/90 text-[11px] text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      <table className="qc-table">
+                        <thead>
                           <tr>
-                            <th scope="col" className="px-4 py-3 font-bold">Microorganism</th>
-                            <th scope="col" className="px-4 py-3 font-bold text-center w-28">부유균</th>
-                            <th scope="col" className="px-4 py-3 font-bold text-center w-28">낙하균</th>
-                            <th scope="col" className="px-4 py-3 font-bold text-center w-28">표면균</th>
-                            <th scope="col" className="px-4 py-3 font-bold text-center w-28 bg-orange-50/60 text-orange-900">Total</th>
+                            <th scope="col" className="qc-th">Microorganism</th>
+                            <th scope="col" className="qc-th text-center w-28">부유균</th>
+                            <th scope="col" className="qc-th text-center w-28">낙하균</th>
+                            <th scope="col" className="qc-th text-center w-28">표면균</th>
+                            <th scope="col" className="qc-th text-center w-28 bg-orange-50/60 text-orange-900">Total</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 bg-white">
+                        <tbody>
                           {occurrencesByParameter.map((item) => (
-                            <tr key={item.organism} className="hover:bg-gray-50/60 transition-colors">
-                              <td className="px-4 py-3">
+                            <tr key={item.organism}>
+                              <td className="qc-td">
                                 <span className="font-serif italic font-semibold text-gray-900">
                                   {item.organism}
                                 </span>
                               </td>
-                              <td className="px-4 py-3 text-center font-mono">
+                              <td className="qc-td text-center font-mono">
                                 {item.airborne > 0 ? (
                                   <span className="font-bold text-gray-900">{item.airborne}</span>
                                 ) : (
                                   <span className="text-gray-300">0</span>
                                 )}
                               </td>
-                              <td className="px-4 py-3 text-center font-mono">
+                              <td className="qc-td text-center font-mono">
                                 {item.settle > 0 ? (
                                   <span className="font-bold text-gray-900">{item.settle}</span>
                                 ) : (
                                   <span className="text-gray-300">0</span>
                                 )}
                               </td>
-                              <td className="px-4 py-3 text-center font-mono">
+                              <td className="qc-td text-center font-mono">
                                 {item.surface > 0 ? (
                                   <span className="font-bold text-gray-900">{item.surface}</span>
                                 ) : (
                                   <span className="text-gray-300">0</span>
                                 )}
                               </td>
-                              <td className="px-4 py-3 text-center font-mono bg-orange-50/40">
+                              <td className="qc-td text-center font-mono bg-orange-50/40">
                                 <span className="font-extrabold text-orange-950 bg-orange-100 border border-orange-200 px-2 py-0.5 rounded">
                                   {item.total}
                                 </span>
@@ -1517,14 +1519,14 @@ export function OosResults() {
             >
               {/* Field 1: Sample Submission Date */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                <label className="qc-label">
                   Sample Submission Date
                 </label>
                 <input
                   type="date"
                   value={editSubmissionDate}
                   onChange={(e) => setEditSubmissionDate(e.target.value)}
-                  className="w-full text-xs rounded border border-gray-300 px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
+                  className="qc-input"
                 />
                 <p className="text-[10px] text-gray-400 mt-1">
                   Date when the test sample was sent to the testing laboratory
@@ -1533,13 +1535,13 @@ export function OosResults() {
 
               {/* Field 2: Microorganism ID Status */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                <label className="qc-label">
                   Microorganism ID Status <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={editIdStatus}
                   onChange={(e) => handleStatusChange(e.target.value as MicroorganismStatus)}
-                  className="w-full text-xs rounded border border-gray-300 px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white font-medium"
+                  className="qc-select font-medium"
                 >
                   <option value="NOT ENTERED">NOT ENTERED</option>
                   <option value="IDENTIFIED">IDENTIFIED</option>
@@ -1568,7 +1570,7 @@ export function OosResults() {
               {editIdStatus === "IDENTIFIED" && (
                 <div className="space-y-2.5 pt-1 animate-in fade-in duration-150">
                   <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    <label className="qc-label">
                       Microorganism Name(s) <span className="text-red-500">*</span>
                     </label>
                     <span className="text-[11px] text-gray-500 font-medium">
@@ -1589,10 +1591,10 @@ export function OosResults() {
                             onChange={(e) => handleEditOrganismName(index, e.target.value)}
                             placeholder="e.g. Staphylococcus aureus, Bacillus subtilis..."
                             className={cn(
-                              "w-full text-xs rounded border px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 bg-white font-serif italic",
+                              "qc-input font-serif italic",
                               validationError && !name.trim() && editOrganismNames.filter((n) => n.trim()).length === 0
                                 ? "border-red-500 focus:ring-red-500"
-                                : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                                : ""
                             )}
                             autoFocus={index === editOrganismNames.length - 1 && index > 0}
                           />
@@ -1614,7 +1616,7 @@ export function OosResults() {
                     <button
                       type="button"
                       onClick={handleAddOrganismName}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 hover:text-orange-800 border border-orange-200 rounded-md transition-colors cursor-pointer"
+                      className="btn-secondary text-orange-700 bg-orange-50 hover:bg-orange-100 hover:text-orange-800 border-orange-200"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       Add Another Microorganism
@@ -1640,14 +1642,14 @@ export function OosResults() {
                   type="button"
                   onClick={handleCloseEditModal}
                   disabled={isSaving}
-                  className="px-3.5 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                  className="btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer shadow-xs"
+                  className="btn-primary"
                 >
                   {isSaving ? (
                     <>
@@ -1695,7 +1697,7 @@ export function OosResults() {
                   <button
                     type="button"
                     onClick={handleCancelRemoveOrganism}
-                    className="px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                    className="btn-secondary"
                   >
                     Cancel
                   </button>
@@ -1738,7 +1740,7 @@ export function OosResults() {
                   <button
                     type="button"
                     onClick={handleCancelStatusChange}
-                    className="px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                    className="btn-secondary"
                   >
                     Keep Identified Status
                   </button>

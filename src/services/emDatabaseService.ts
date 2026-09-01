@@ -73,12 +73,17 @@ export async function checkDuplicateDocument(filename: string, fileHash?: string
 }
 
 export async function importEMData(documentMetadata: DocumentMetadata, measurements: EMMeasurementRecord[]): Promise<void> {
+  // Helper to remove undefined properties
+  const cleanUndefined = (obj: any) => Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined));
+
+  const cleanDocMetadata = cleanUndefined(documentMetadata);
+
   const batch = writeBatch(db);
   
   // Create document metadata
   const docRef = doc(db, 'em_documents', documentMetadata.document_id);
   batch.set(docRef, {
-    ...documentMetadata,
+    ...cleanDocMetadata,
     imported_at: serverTimestamp()
   });
 
@@ -87,14 +92,15 @@ export async function importEMData(documentMetadata: DocumentMetadata, measureme
   
   if (measurements.length > CHUNK_SIZE) {
     let currentBatch = writeBatch(db);
-    currentBatch.set(docRef, { ...documentMetadata, imported_at: serverTimestamp() });
+    currentBatch.set(docRef, { ...cleanDocMetadata, imported_at: serverTimestamp() });
     
     let opCount = 1;
     
     for (const record of measurements) {
+      const cleanRecord = cleanUndefined(record);
       const measurementRef = doc(db, 'em_measurements', record.measurement_id);
       currentBatch.set(measurementRef, {
-        ...record,
+        ...cleanRecord,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp()
       });
@@ -113,9 +119,10 @@ export async function importEMData(documentMetadata: DocumentMetadata, measureme
     }
   } else {
     for (const record of measurements) {
+      const cleanRecord = cleanUndefined(record);
       const measurementRef = doc(db, 'em_measurements', record.measurement_id);
       batch.set(measurementRef, {
-        ...record,
+        ...cleanRecord,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp()
       });
@@ -152,12 +159,47 @@ export async function updateMeasurement(id: string, updates: Partial<EMMeasureme
   });
 }
 
+export async function deleteMeasurementsBatch(ids: string[]): Promise<void> {
+  if (!ids || ids.length === 0) return;
+  
+  let currentBatch = writeBatch(db);
+  let opCount = 0;
+  
+  for (const id of ids) {
+    currentBatch.delete(doc(db, 'em_measurements', id));
+    opCount++;
+    if (opCount >= 400) {
+      await currentBatch.commit();
+      currentBatch = writeBatch(db);
+      opCount = 0;
+    }
+  }
+  
+  if (opCount > 0) {
+    await currentBatch.commit();
+  }
+}
+
 export async function deleteMeasurement(id: string): Promise<void> {
   const docRef = doc(db, 'em_measurements', id);
   await deleteDoc(docRef);
 }
 
 // Function to delete an entire imported document and its measurements
+export async function getDocumentInfo(documentId: string): Promise<DocumentMetadata | null> {
+  try {
+    const q = query(collection(db, 'em_documents'), where('document_id', '==', documentId), limit(1));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      return snapshot.docs[0].data() as DocumentMetadata;
+    }
+    return null;
+  } catch (err) {
+    console.error('Error fetching document info:', err);
+    return null;
+  }
+}
+
 export async function deleteDocumentAndMeasurements(documentId: string): Promise<void> {
   const q = query(collection(db, 'em_measurements'), where('document_id', '==', documentId));
   const snapshot = await getDocs(q);

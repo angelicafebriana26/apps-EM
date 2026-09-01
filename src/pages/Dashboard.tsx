@@ -386,10 +386,10 @@ export function Dashboard() {
   return (
     <div className="flex-1 flex flex-col space-y-6 min-w-0">
       {/* Top Header & Filter Bar Card */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-2xs p-5">
+      <div className="qc-card p-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
               <Activity className="w-5 h-5 text-orange-600" />
               Environmental Monitoring Dashboard
             </h2>
@@ -403,7 +403,7 @@ export function Dashboard() {
             {/* Year Filter */}
             <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-200">
               <Calendar className="w-3.5 h-3.5 text-gray-500" />
-              <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+              <label className="qc-label !mb-0">
                 Year:
               </label>
               <select
@@ -423,7 +423,7 @@ export function Dashboard() {
             {/* Month Filter */}
             <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-200">
               <Filter className="w-3.5 h-3.5 text-gray-500" />
-              <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+              <label className="qc-label !mb-0">
                 Month:
               </label>
               <select
@@ -445,7 +445,7 @@ export function Dashboard() {
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-2xs transition-colors cursor-pointer"
+                className="btn-secondary"
                 title="Reset Year and Month filters"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -459,7 +459,7 @@ export function Dashboard() {
       {/* Summary Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {/* 1. Total EM Records */}
-        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-2xs flex flex-col justify-between">
+        <div className="qc-card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
               Total EM Records
@@ -476,7 +476,7 @@ export function Dashboard() {
         </div>
 
         {/* 2. Rooms Monitored */}
-        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-2xs flex flex-col justify-between">
+        <div className="qc-card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
               Rooms Monitored
@@ -493,7 +493,7 @@ export function Dashboard() {
         </div>
 
         {/* 3. PASS (Neutral / Black convention) */}
-        <div className="bg-white p-4 rounded-xl border border-gray-300 shadow-2xs flex flex-col justify-between">
+        <div className="qc-card p-4 border-gray-300 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-gray-900 uppercase tracking-wider block">
               PASS
@@ -510,7 +510,7 @@ export function Dashboard() {
         </div>
 
         {/* 4. ALERT (Blue convention) */}
-        <div className="bg-white p-4 rounded-xl border border-blue-200 shadow-2xs flex flex-col justify-between">
+        <div className="qc-card p-4 border-blue-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider block">
               ALERT
@@ -527,7 +527,7 @@ export function Dashboard() {
         </div>
 
         {/* 5. ACTION (Green convention) */}
-        <div className="bg-white p-4 rounded-xl border border-emerald-200 shadow-2xs flex flex-col justify-between">
+        <div className="qc-card p-4 border-emerald-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">
               ACTION
@@ -544,7 +544,7 @@ export function Dashboard() {
         </div>
 
         {/* 6. OOS (Red convention) */}
-        <div className="bg-white p-4 rounded-xl border border-red-200 shadow-2xs flex flex-col justify-between">
+        <div className="qc-card p-4 border-red-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-red-700 uppercase tracking-wider block">
               OOS
@@ -563,7 +563,7 @@ export function Dashboard() {
 
       {/* Main Body: Either Empty State or Analytics Breakdown */}
       {filteredRooms.length === 0 && !loading ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-2xs">
+        <div className="qc-card p-12 text-center">
           <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-3">
             <Activity className="w-6 h-6" />
           </div>
@@ -580,7 +580,7 @@ export function Dashboard() {
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer shadow-2xs"
+                className="btn-primary"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 Reset Filters
@@ -588,7 +588,7 @@ export function Dashboard() {
             ) : (
               <Link
                 to="/import"
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded transition-colors shadow-2xs"
+                className="btn-primary"
               >
                 <FileUp className="w-3.5 h-3.5" />
                 Import PDF
@@ -599,7 +599,7 @@ export function Dashboard() {
       ) : (
         <div className="space-y-6">
           {/* SECTION 1: Monthly Trend Preview (Quick Trend) */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-2xs">
+          <div className="qc-card p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
               <div>
                 <h3 className="font-bold text-gray-900 flex items-center gap-2 text-sm">
@@ -615,7 +615,7 @@ export function Dashboard() {
               <div className="flex flex-wrap items-center gap-3">
                 {/* Parameter Dropdown */}
                 <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">
-                  <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                  <label className="qc-label !mb-0">
                     Parameter:
                   </label>
                   <select
@@ -634,7 +634,7 @@ export function Dashboard() {
                 {/* View Full Trend Analysis Link */}
                 <Link
                   to="/trends"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg border border-orange-200 transition-colors"
+                  className="btn-secondary text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700"
                 >
                   View Full Trend Analysis
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -706,7 +706,7 @@ export function Dashboard() {
           {/* SECTION 2 & 3: Two Columns (Recent OOS Results & Microorganism Summary) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Column: Recent OOS Results (All 5 parameters) */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-2xs flex flex-col justify-between">
+            <div className="qc-card p-6 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                   <div>
@@ -727,17 +727,17 @@ export function Dashboard() {
                   </Link>
                 </div>
 
-                <div className="overflow-hidden border border-gray-200 rounded-lg">
-                  <table className="w-full text-xs text-left">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                <div className="overflow-hidden border border-gray-200 rounded-xl bg-white">
+                  <table className="qc-table">
+                    <thead>
                       <tr>
-                        <th scope="col" className="px-3 py-2.5 font-bold text-gray-600 uppercase tracking-wider text-[10px]">Date</th>
-                        <th scope="col" className="px-3 py-2.5 font-bold text-gray-600 uppercase tracking-wider text-[10px]">Room</th>
-                        <th scope="col" className="px-3 py-2.5 font-bold text-gray-600 uppercase tracking-wider text-[10px]">Parameter</th>
-                        <th scope="col" className="px-3 py-2.5 font-bold text-gray-600 uppercase tracking-wider text-[10px] text-right">Result</th>
+                        <th scope="col" className="qc-th">Date</th>
+                        <th scope="col" className="qc-th">Room</th>
+                        <th scope="col" className="qc-th">Parameter</th>
+                        <th scope="col" className="qc-th text-right">Result</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 bg-white">
+                    <tbody>
                       {recentOosRecords.length === 0 ? (
                         <tr>
                           <td colSpan={4} className="px-4 py-8 text-center text-gray-400 italic">
@@ -747,33 +747,29 @@ export function Dashboard() {
                         </tr>
                       ) : (
                         recentOosRecords.map((m) => (
-                          <tr key={m.measurement_id} className="hover:bg-red-50/40 transition-colors">
-                            <td className="px-3 py-2 text-gray-600 font-mono whitespace-nowrap">
+                          <tr key={m.measurement_id} className="hover:bg-red-50/30 transition-colors">
+                            <td className="qc-td font-mono whitespace-nowrap">
                               {m.measurement_date || "-"}
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="qc-td">
                               <div className="flex items-center gap-1.5">
                                 <span className="font-semibold text-gray-900 truncate max-w-[130px]" title={m.room_name || ""}>
                                   {m.room_name || "-"}
                                 </span>
                                 {m.room_grade && (
-                                  <span className="text-[9px] px-1 py-0.2 bg-gray-100 text-gray-600 rounded font-semibold border border-gray-200">
+                                  <span className="text-[10px] px-1 py-0.2 bg-gray-100 text-gray-600 rounded font-semibold border border-gray-200">
                                     Gr {m.room_grade}
                                   </span>
                                 )}
                               </div>
                             </td>
-                            <td className="px-3 py-2 text-gray-700 font-medium truncate max-w-[120px]" title={m.parameter_name}>
+                            <td className="qc-td font-medium truncate max-w-[120px]" title={m.parameter_name}>
                               {m.parameter_name}
                             </td>
-                            <td className="px-3 py-2 text-right font-mono font-bold text-red-700 whitespace-nowrap">
-                              {m.result !== null && m.result !== undefined ? (
-                                <span className="inline-flex items-center px-1.5 py-0.5 bg-red-50 text-red-700 rounded border border-red-200">
-                                  {m.result} {m.unit || ""}
-                                </span>
-                              ) : (
-                                "-"
-                              )}
+                            <td className="qc-td text-right font-mono font-bold text-red-600 whitespace-nowrap">
+                              <span className="inline-flex items-center px-1.5 py-0.5 bg-red-50 text-red-700 rounded border border-red-200 text-xs">
+                                {m.result !== null && m.result !== undefined ? m.result : "-"} {m.unit || ""}
+                              </span>
                             </td>
                           </tr>
                         ))
@@ -785,7 +781,7 @@ export function Dashboard() {
 
               <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
                 <span className="text-[11px]">
-                  Total OOS in period: <strong className="text-red-700">{oosCount}</strong>
+                  Total OOS in period: <strong className="text-red-700 font-bold">{oosCount}</strong>
                 </span>
                 <Link
                   to="/oos"
@@ -798,7 +794,7 @@ export function Dashboard() {
             </div>
 
             {/* Right Column: Microorganism Summary (Top 3-5 Identified Organisms) */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-2xs flex flex-col justify-between">
+            <div className="qc-card p-6 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                   <div>
@@ -819,19 +815,19 @@ export function Dashboard() {
                   </Link>
                 </div>
 
-                <div className="overflow-hidden border border-gray-200 rounded-lg">
-                  <table className="w-full text-xs text-left">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                <div className="overflow-hidden border border-gray-200 rounded-xl bg-white">
+                  <table className="qc-table">
+                    <thead>
                       <tr>
-                        <th scope="col" className="px-3 py-2.5 font-bold text-gray-600 uppercase tracking-wider text-[10px]">
+                        <th scope="col" className="qc-th">
                           Microorganism
                         </th>
-                        <th scope="col" className="px-3 py-2.5 font-bold text-gray-600 uppercase tracking-wider text-[10px] text-right">
+                        <th scope="col" className="qc-th text-right">
                           Occurrences
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 bg-white">
+                    <tbody>
                       {topMicroorganisms.length === 0 ? (
                         <tr>
                           <td colSpan={2} className="px-4 py-8 text-center text-gray-400 italic">
@@ -847,17 +843,17 @@ export function Dashboard() {
 
                           return (
                             <tr key={org.name} className="hover:bg-gray-50/60 transition-colors">
-                              <td className="px-3 py-2.5">
+                              <td className="qc-td">
                                 <div className="flex items-center gap-2">
                                   <span className="w-4 h-4 rounded-full bg-orange-100 text-orange-800 flex items-center justify-center text-[10px] font-bold">
                                     {index + 1}
                                   </span>
-                                  <span className="font-semibold text-gray-900 italic">
+                                  <span className="font-semibold text-gray-900 font-serif italic">
                                     {org.name}
                                   </span>
                                 </div>
                               </td>
-                              <td className="px-3 py-2.5 text-right">
+                              <td className="qc-td text-right">
                                 <div className="inline-flex items-center gap-2">
                                   <div className="w-16 bg-gray-100 rounded-full h-1.5 overflow-hidden hidden sm:block">
                                     <div
@@ -885,7 +881,7 @@ export function Dashboard() {
                 </span>
                 <Link
                   to="/oos?tab=microorganism"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded transition-colors shadow-2xs"
+                  className="btn-primary"
                 >
                   <Bug className="w-3.5 h-3.5" />
                   View Microorganism Analysis
@@ -895,7 +891,7 @@ export function Dashboard() {
           </div>
 
           {/* Cleanroom Compliance Distribution Bar & Quick Module Links */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-2xs">
+          <div className="qc-card p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-gray-100">
               <h3 className="font-bold text-gray-900 flex items-center gap-2 text-sm">
                 <Layers className="w-4 h-4 text-orange-600" />
